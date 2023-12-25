@@ -7,6 +7,7 @@ The Simple HWID Checker is a hardware identification or HWID tool that collects 
 1. Compile the C++ code.
 2. Run the compiled executable.
 3. The console will display various hardware information of the system.
+(or just create a new Visual Studio project and copy the code in the *.cpp file)
 
 ## Code Overview
 
