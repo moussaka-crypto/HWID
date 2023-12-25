@@ -1,13 +1,14 @@
 # Simple HWID Checker
 
-The Simple HWID Checker is a hardware identification or HWID tool that collects system-specific information such as hard drive data, computer name, CPU hash, GPU information, total system memory, MAC address, and BIOS serial number.
+The Simple HWID Checker is a hardware identification (HWID) tool that collects system-specific information such as hard drive data, computer name, CPU hash, GPU information, total system memory, MAC address, and BIOS serial number.
 
 ## How to Use
 
 1. Compile the C++ code.
 2. Run the compiled executable.
-3. The console will display various hardware information of the system.
-(or just create a new Visual Studio project and copy the code in the *.cpp file)
+3. The console will display various hardware information of the system. <br>
+
+__(or just create a new Visual Studio project and copy the code in the *.cpp file)__
 
 ## Code Overview
 
