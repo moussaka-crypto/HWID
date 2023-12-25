@@ -72,7 +72,6 @@ DWORDLONG getTotalSystemMemory()
     return statex.ullTotalPhys / (1024 * 1024);
 }
 
-
 std::string getMACaddress()
 {
     ULONG ulOutBufLen = sizeof(IP_ADAPTER_INFO);
@@ -260,8 +259,21 @@ std::string getBiosSerialNumber() {
 
 int main()
 {
-    //First part gets the HDD informations
-    std::cout << "HWID information" << std::endl;
+    std::cout << "*****************************************************" << std::endl;
+    std::cout << "****            HWID Tool information             ****" << std::endl; 
+    std::cout << "*****************************************************\n" << std::endl;
+    
+    // First part gets the computer name
+    TCHAR computerName[MAX_COMPUTERNAME_LENGTH + 1];
+    DWORD size = sizeof(computerName) / sizeof(computerName[0]);
+    if (GetComputerName(
+        computerName,
+        &size))
+    {
+        std::cout << "Computer Name: " << computerName << std::endl;
+    }
+
+    //Second part gets the HDD information
     TCHAR volumeName[MAX_PATH + 1] = { 0 };
     TCHAR fileSystemName[MAX_PATH + 1] = { 0 };
     DWORD serialNumber = 0;
@@ -277,51 +289,41 @@ int main()
         fileSystemName,
         ARRAYSIZE(fileSystemName)))
     {
-        std::cout << "Volume Name: " << volumeName << std::endl;
+        std::cout << "\nVolume Name: " << volumeName << std::endl;
         std::cout << "HDD Serial: " << serialNumber << std::endl;
         std::cout << "File System Type: " << fileSystemName << std::endl;
-        std::cout << "Max Component Length: " << maxComponentLen << std::endl;
+        std::cout << "Max Component Length: " << maxComponentLen << std::endl << std::endl;
     }
 
-    //Second part gets the computer name
-    TCHAR computerName[MAX_COMPUTERNAME_LENGTH + 1];
-    DWORD size = sizeof(computerName) / sizeof(computerName[0]);
-    if (GetComputerName(
-        computerName,
-        &size))
+    //Third part gets the GPU information
+    std::vector<std::string> graphicsCards = getGraphicsCardInfo();
+    size_t idx = 0;
+    for (const auto& card : graphicsCards)
     {
-        std::cout << "Computer Name: " << computerName << std::endl;
+        std::cout << "GPU " << idx++ << ": " << card << std::endl;
     }
 
-    //Third part gets the CPU Hash
+    //Fourth part gets the CPU Hash
     int cpuinfo[4] = { 0, 0, 0, 0 }; //EAX, EBX, ECX, EDX
     __cpuid(cpuinfo, 0);
     char32_t hash = 0;
     char16_t* ptr = (char16_t*)(&cpuinfo[0]);
     for (char32_t i = 0; i < 8; i++)
         hash += ptr[i];
-    std::cout << "CPU Hash: " << static_cast<std::uint32_t>(hash) << std::endl;
-
-    //Fourth part gets the GPU information
-    std::vector<std::string> graphicsCards = getGraphicsCardInfo();
-    for (const auto& card : graphicsCards)
-    {
-        std::cout << "Graphics Card: " << card << std::endl;
-    }
+    std::cout << "\nCPU Hash: " << static_cast<std::uint32_t>(hash) << std::endl;
 
     //Fifth part gets the Total System Memory
     DWORDLONG totalMemoryMB = getTotalSystemMemory();
-    std::cout << "Total System Memory: " << totalMemoryMB << " MB" << std::endl;
-
+    std::cout << "\nTotal System Memory: " << totalMemoryMB << " MB" << std::endl;
 
     //Sixth part gets the MAC address
     std::string macAddress = getMACaddress();
-    std::cout << "MAC Address: " << macAddress << std::endl;
+    std::cout << "\nMAC Address: " << macAddress << std::endl;
 
     //Seventh part gets the BIOS Serial Number
     std::string biosSerial = getBiosSerialNumber();
-    std::cout << "BIOS Serial: " << biosSerial << std::endl;
+    std::cout << "\nBIOS Serial: " << biosSerial << std::endl << std::endl;
 
     system("pause");
-    return(0);
+    return 0;
 }
